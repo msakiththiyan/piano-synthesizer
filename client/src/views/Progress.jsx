@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { LEVELS } from '../lib/levels.js';
 
 export default function Progress() {
   const [data, setData] = useState(null);
@@ -26,7 +27,10 @@ export default function Progress() {
         <div className="card" key={s.id}>
           <div className="card-main">
             <div className="card-title">{s.title}</div>
-            <div className="card-sub">{s.created_at} · ✓ {s.correct} · ✗ {s.wrong}</div>
+            <div className="card-sub">
+              {s.created_at} · ✓ {s.correct} · ✗ {s.wrong}
+              {s.level && LEVELS[s.level] && <> · {LEVELS[s.level].emoji} {LEVELS[s.level].name}</>}
+            </div>
           </div>
           <div className={'accuracy acc-' + (s.accuracy >= 90 ? 'good' : s.accuracy >= 70 ? 'ok' : 'low')}>
             {s.accuracy}%

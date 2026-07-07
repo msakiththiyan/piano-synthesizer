@@ -9,6 +9,26 @@ const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 *
 
 app.use(express.json());
 
+const SKILL_LEVELS = ['beginner', 'relearner', 'intermediate'];
+const getSkillLevel = () =>
+  db.prepare(`SELECT value FROM settings WHERE key = 'skill_level'`).get()?.value ?? null;
+
+app.get('/api/profile', (req, res) => {
+  res.json({ skillLevel: getSkillLevel() });
+});
+
+app.put('/api/profile', (req, res) => {
+  const { skillLevel } = req.body;
+  if (!SKILL_LEVELS.includes(skillLevel)) {
+    return res.status(400).json({ error: 'skillLevel must be one of: ' + SKILL_LEVELS.join(', ') });
+  }
+  db.prepare(
+    `INSERT INTO settings (key, value) VALUES ('skill_level', ?)
+     ON CONFLICT(key) DO UPDATE SET value = excluded.value`
+  ).run(skillLevel);
+  res.json({ skillLevel });
+});
+
 const songSummary = (row) => ({
   id: row.id,
   title: row.title,
@@ -85,8 +105,8 @@ app.post('/api/sessions', (req, res) => {
   const total = correct + wrong;
   const accuracy = total > 0 ? Math.round((correct / total) * 100) : 0;
   db.prepare(
-    'INSERT INTO sessions (song_id, correct, wrong, accuracy, completed) VALUES (?, ?, ?, ?, ?)'
-  ).run(songId, correct, wrong, accuracy, completed ? 1 : 0);
+    'INSERT INTO sessions (song_id, correct, wrong, accuracy, completed, level) VALUES (?, ?, ?, ?, ?, ?)'
+  ).run(songId, correct, wrong, accuracy, completed ? 1 : 0, getSkillLevel() ?? '');
   res.status(201).json({ accuracy });
 });
 

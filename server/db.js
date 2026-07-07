@@ -28,7 +28,18 @@ db.exec(`
     completed INTEGER NOT NULL DEFAULT 0,
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
+
+  CREATE TABLE IF NOT EXISTS settings (
+    key TEXT PRIMARY KEY,
+    value TEXT NOT NULL
+  );
 `);
+
+// migration: sessions.level added after first release
+const sessionCols = db.prepare('PRAGMA table_info(sessions)').all();
+if (!sessionCols.some((c) => c.name === 'level')) {
+  db.exec(`ALTER TABLE sessions ADD COLUMN level TEXT NOT NULL DEFAULT ''`);
+}
 
 const NOTE_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 const noteName = (midi) => NOTE_NAMES[midi % 12] + (Math.floor(midi / 12) - 1);

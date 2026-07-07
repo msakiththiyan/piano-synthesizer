@@ -1,8 +1,10 @@
 import { useRef, useState } from 'react';
+import { levelConfig } from '../lib/levels.js';
 
 const DIFF = { 1: 'Beginner', 2: 'Intermediate', 3: 'Advanced' };
 
-export default function Library({ songs, onRefresh, onPractice }) {
+export default function Library({ songs, level, onRefresh, onPractice }) {
+  const cfg = levelConfig(level);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(null);
   const fileRef = useRef();
@@ -42,6 +44,7 @@ export default function Library({ songs, onRefresh, onPractice }) {
 
   const exercises = songs.filter((s) => s.source === 'builtin');
   const uploads = songs.filter((s) => s.source === 'upload');
+  const recommended = songs.filter((s) => cfg.recommend.includes(s.difficulty));
 
   const card = (s) => (
     <div className="card" key={s.id}>
@@ -65,6 +68,13 @@ export default function Library({ songs, onRefresh, onPractice }) {
 
   return (
     <div>
+      {recommended.length > 0 && (
+        <section>
+          <h2>{cfg.emoji} Recommended for you ({cfg.name.toLowerCase()})</h2>
+          {recommended.map(card)}
+        </section>
+      )}
+
       <section>
         <h2>Add a song</h2>
         <p className="muted">

@@ -3,8 +3,10 @@ import Piano from '../components/Piano.jsx';
 import * as synth from '../lib/synth.js';
 import { groupIntoSteps, noteName } from '../lib/notes.js';
 import { useMidiInput } from '../lib/useMidiInput.js';
+import { levelConfig } from '../lib/levels.js';
 
-export default function Practice({ songId, onBack }) {
+export default function Practice({ songId, level, onBack }) {
+  const cfg = levelConfig(level);
   const [song, setSong] = useState(null);
   const [mode, setMode] = useState('idle'); // idle | listen | practice | done
   const [stepIdx, setStepIdx] = useState(0);
@@ -13,6 +15,7 @@ export default function Practice({ songId, onBack }) {
   const [result, setResult] = useState(null);
   const [flash, setFlash] = useState(false);
   const [activeNotes, setActiveNotes] = useState(new Set());
+  const [showKeyHints, setShowKeyHints] = useState(cfg.hints === 'full');
 
   const satisfied = useRef(new Set());
   const playTimers = useRef([]);
@@ -37,23 +40,26 @@ export default function Practice({ songId, onBack }) {
   const listen = () => {
     stopPlayback();
     setMode('listen');
+    const rate = cfg.playbackRate; // beginners hear songs slowed down
     const notes = song.notes;
     for (const n of notes) {
-      synth.playNote(n.midi, n.duration, n.time);
+      const time = n.time / rate;
+      const duration = n.duration / rate;
+      synth.playNote(n.midi, duration, time);
       playTimers.current.push(
         setTimeout(() => {
           setActiveNotes((prev) => new Set(prev).add(n.midi));
-        }, n.time * 1000),
+        }, time * 1000),
         setTimeout(() => {
           setActiveNotes((prev) => {
             const next = new Set(prev);
             next.delete(n.midi);
             return next;
           });
-        }, (n.time + Math.max(n.duration, 0.15)) * 1000)
+        }, (time + Math.max(duration, 0.15)) * 1000)
       );
     }
-    const end = Math.max(...notes.map((n) => n.time + n.duration));
+    const end = Math.max(...notes.map((n) => (n.time + n.duration) / rate));
     playTimers.current.push(setTimeout(() => setMode('idle'), end * 1000 + 300));
   };
 
@@ -120,7 +126,7 @@ export default function Practice({ songId, onBack }) {
 
   const currentStep = steps[stepIdx];
   const nextStep = steps[stepIdx + 1];
-  const highlight = mode === 'practice' ? new Set(currentStep.midis) : new Set();
+  const highlight = mode === 'practice' && showKeyHints ? new Set(currentStep.midis) : new Set();
   const pct = steps.length ? Math.round((stepIdx / steps.length) * 100) : 0;
 
   return (
@@ -137,6 +143,10 @@ export default function Practice({ songId, onBack }) {
         <button className="btn primary" onClick={startPractice}>
           {mode === 'practice' ? 'Restart' : 'Start practice'}
         </button>
+        <button className="btn" onClick={() => setShowKeyHints((v) => !v)}>
+          {showKeyHints ? 'Hide key hints' : 'Show key hints'}
+        </button>
+        {cfg.playbackRate !== 1 && <span className="muted listen-rate">Listen plays at {Math.round(cfg.playbackRate * 100)}% speed</span>}
       </div>
 
       {mode === 'practice' && (
@@ -166,6 +176,7 @@ export default function Practice({ songId, onBack }) {
         highlightNotes={highlight}
         onNoteOn={handleNoteOn}
         onNoteOff={handleNoteOff}
+        showLabels={cfg.keyLabels}
       />
     </div>
   );

@@ -2,8 +2,9 @@ import { useState } from 'react';
 import Piano from '../components/Piano.jsx';
 import * as synth from '../lib/synth.js';
 import { useMidiInput } from '../lib/useMidiInput.js';
+import { levelConfig } from '../lib/levels.js';
 
-export default function FreePlay() {
+export default function FreePlay({ level }) {
   const [activeNotes, setActiveNotes] = useState(new Set());
 
   const handleNoteOn = (midi, velocity = 0.8) => {
@@ -27,7 +28,12 @@ export default function FreePlay() {
       {midiDevice
         ? <p className="midi-badge">🎹 MIDI keyboard connected: {midiDevice}</p>
         : <p className="muted">No MIDI keyboard detected — play with your mouse or computer keyboard. Plug one in any time and it just works.</p>}
-      <Piano activeNotes={activeNotes} onNoteOn={handleNoteOn} onNoteOff={handleNoteOff} />
+      <Piano
+        activeNotes={activeNotes}
+        onNoteOn={handleNoteOn}
+        onNoteOff={handleNoteOff}
+        showLabels={levelConfig(level).keyLabels}
+      />
     </div>
   );
 }

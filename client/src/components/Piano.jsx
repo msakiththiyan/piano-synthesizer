@@ -13,6 +13,7 @@ export default function Piano({
   highlightNotes = new Set(),
   onNoteOn,
   onNoteOff,
+  showLabels = 'c', // 'all' = every white key, 'c' = only C keys
 }) {
   const [baseOctaveC, setBaseOctaveC] = useState(60); // C4 for computer keys
   const downKeys = useRef(new Set());
@@ -76,7 +77,7 @@ export default function Piano({
             onTouchStart={press(m)}
             onTouchEnd={lift(m)}
           >
-            {m % 12 === 0 && <span className="key-label">{noteName(m)}</span>}
+            {(showLabels === 'all' || m % 12 === 0) && <span className="key-label">{noteName(m)}</span>}
             {m === baseOctaveC && <span className="kb-anchor">⌨</span>}
           </div>
         ))}

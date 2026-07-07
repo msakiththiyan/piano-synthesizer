@@ -2,3 +2,4 @@ node_modules/
 dist/
 server/piano.db
 server/piano.db-*
+plan.md
