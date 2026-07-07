@@ -35,17 +35,20 @@ export default function App() {
   return (
     <div className="app">
       <header>
-        <h1>🎹 Piano Tutor</h1>
-        {!needsPick && (
-          <nav>
-            <button className={view === 'library' ? 'on' : ''} onClick={() => { refresh(); setView('library'); }}>Library</button>
-            <button className={view === 'freeplay' ? 'on' : ''} onClick={() => setView('freeplay')}>Free play</button>
-            <button className={view === 'progress' ? 'on' : ''} onClick={() => setView('progress')}>Progress</button>
-            <button className={'level-chip' + (view === 'level' ? ' on' : '')} onClick={() => setView('level')}>
-              {LEVELS[level].emoji} {LEVELS[level].name}
-            </button>
-          </nav>
-        )}
+        <div className="fallboard">
+          <h1>Piano Tutor</h1>
+          {!needsPick && (
+            <nav>
+              <button className={view === 'library' ? 'on' : ''} onClick={() => { refresh(); setView('library'); }}>Library</button>
+              <button className={view === 'freeplay' ? 'on' : ''} onClick={() => setView('freeplay')}>Free play</button>
+              <button className={view === 'progress' ? 'on' : ''} onClick={() => setView('progress')}>Progress</button>
+              <button className={'level-chip' + (view === 'level' ? ' on' : '')} onClick={() => setView('level')}>
+                {LEVELS[level].name}
+              </button>
+            </nav>
+          )}
+        </div>
+        <div className="felt-rail" aria-hidden="true" />
       </header>
       <main>
         {showingPicker && (

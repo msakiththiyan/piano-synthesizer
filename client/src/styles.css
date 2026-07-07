@@ -1,131 +1,277 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* Palette: piano materials. Ebony lacquer case, ivory keys, the crimson
+   key-rail felt every acoustic keybed has, green under-key felt, brass
+   nameplate. Red felt = wrong note, green felt = keys to play. */
 :root {
-  --bg: #14161d;
-  --panel: #1e222d;
-  --panel-2: #262b38;
-  --text: #e8eaf0;
-  --muted: #8b91a0;
-  --accent: #4f8cff;
-  --green: #3ecf8e;
-  --red: #ff5f6b;
-  --amber: #f5b843;
+  --ebony: #171310;
+  --ebony-2: #211b16;
+  --ebony-3: #2c241c;
+  --edge: #362c22;
+  --ivory: #f2e9d8;
+  --ivory-dim: #a3957e;
+  --felt: #a72734;
+  --felt-bright: #c23543;
+  --felt-green: #4e8f66;
+  --felt-green-deep: #2f6a48;
+  --brass: #c8a35f;
+
+  --display: 'Cormorant Garamond', Georgia, serif;
+  --body: 'Karla', system-ui, sans-serif;
+  --mono: 'Spline Sans Mono', ui-monospace, monospace;
 }
 
 body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
-  line-height: 1.5;
+  background:
+    radial-gradient(120% 90% at 50% 0%, #1d1814 0%, var(--ebony) 55%);
+  background-attachment: fixed;
+  color: var(--ivory);
+  font-family: var(--body);
+  font-size: 15px;
+  line-height: 1.55;
+  min-height: 100vh;
 }
 
-.app { max-width: 1100px; margin: 0 auto; padding: 20px; }
+.app { max-width: 1100px; margin: 0 auto; padding: 0 24px 40px; }
 
-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
-header h1 { font-size: 22px; }
-nav { display: flex; gap: 8px; }
+button { font-family: inherit; }
+
+:focus-visible { outline: 2px solid var(--brass); outline-offset: 2px; }
+
+/* ---- Fallboard header + felt rail (the signature) ---- */
+
+header { margin: 0 -24px 30px; }
+
+.fallboard {
+  display: flex; align-items: baseline; justify-content: space-between;
+  flex-wrap: wrap; gap: 10px 24px;
+  padding: 26px 24px 14px;
+}
+
+h1 {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 26px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--brass);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.6);
+  animation: nameplate 0.9s ease-out both;
+}
+
+/* The crimson felt strip that lines a keybed, running under the header.
+   It appears once more behind the on-screen keys — same material, same app. */
+.felt-rail {
+  height: 7px;
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 3px),
+    linear-gradient(180deg, var(--felt-bright), var(--felt) 55%, #7d1b26);
+  border-bottom: 1px solid #4a1017;
+  transform-origin: left;
+  animation: rail-in 0.7s 0.15s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+
+@keyframes nameplate { from { opacity: 0; letter-spacing: 0.5em; } }
+@keyframes rail-in { from { transform: scaleX(0); } }
+
+nav { display: flex; gap: 4px; flex-wrap: wrap; align-items: baseline; }
 nav button {
-  background: var(--panel); color: var(--text); border: 1px solid #333a4a;
-  padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 14px;
+  background: none; border: none; cursor: pointer;
+  color: var(--ivory-dim); font-size: 15px;
+  padding: 8px 12px 10px;
+  border-bottom: 3px solid transparent;
+  transition: color 0.15s;
 }
-nav button.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+nav button:hover { color: var(--ivory); }
+nav button.on { color: var(--ivory); border-bottom-color: var(--felt); }
 
-section { margin-bottom: 28px; }
-h2 { font-size: 18px; margin-bottom: 10px; }
-h3 { font-size: 15px; margin: 18px 0 8px; }
-.muted { color: var(--muted); font-size: 14px; }
-.error { color: var(--red); margin-top: 8px; }
+/* Skill level as a small brass plaque */
+nav .level-chip {
+  font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--brass);
+  border: 1px solid #6d5730; border-bottom-width: 1px; border-radius: 3px;
+  padding: 6px 12px; margin-left: 10px; align-self: center;
+}
+nav .level-chip:hover { border-color: var(--brass); color: var(--brass); }
+nav .level-chip.on { border-color: var(--brass); background: rgba(200, 163, 95, 0.08); }
+
+/* ---- Text ---- */
+
+section { margin-bottom: 34px; }
+h2 {
+  font-family: var(--display); font-weight: 600; font-size: 24px;
+  letter-spacing: 0.01em; margin-bottom: 10px;
+}
+h3 {
+  font-family: var(--display); font-weight: 600; font-size: 19px;
+  margin: 22px 0 8px; color: var(--ivory);
+}
+.h2-note { font-size: 17px; font-style: italic; color: var(--ivory-dim); }
+.muted { color: var(--ivory-dim); font-size: 14px; }
+.error { color: var(--felt-bright); margin-top: 8px; }
+
+/* ---- Buttons ---- */
 
 .btn {
-  background: var(--panel-2); color: var(--text); border: 1px solid #3a4152;
-  padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 14px;
+  background: var(--ebony-2); color: var(--ivory);
+  border: 1px solid var(--edge); border-radius: 6px;
+  padding: 8px 15px; cursor: pointer; font-size: 14px; font-weight: 500;
+  transition: border-color 0.15s, background 0.15s;
 }
-.btn:hover { border-color: var(--accent); }
-.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-.btn.danger { background: transparent; border-color: #5a3a3f; color: var(--red); }
+.btn:hover { border-color: var(--ivory-dim); background: var(--ebony-3); }
+.btn.primary { background: var(--felt); border-color: #7d1b26; color: #fdf3f0; }
+.btn.primary:hover { background: var(--felt-bright); }
+.btn.danger { background: transparent; border-color: #56312f; color: var(--felt-bright); }
 .btn:disabled { opacity: 0.5; cursor: default; }
 
-.upload-form { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+/* ---- Forms ---- */
+
+.upload-form { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
 .upload-form input[type="text"] {
-  background: var(--panel); border: 1px solid #333a4a; color: var(--text);
-  padding: 8px 12px; border-radius: 8px; font-size: 14px;
+  background: var(--ebony-2); border: 1px solid var(--edge); color: var(--ivory);
+  padding: 8px 12px; border-radius: 6px; font-size: 14px; font-family: inherit;
 }
-.upload-form input[type="file"] { color: var(--muted); font-size: 13px; max-width: 240px; }
+.upload-form input[type="text"]::placeholder { color: #7c7060; }
+.upload-form input[type="file"] { color: var(--ivory-dim); font-size: 13px; max-width: 240px; }
+
+/* ---- Song cards ---- */
 
 .card {
   display: flex; align-items: center; justify-content: space-between;
-  background: var(--panel); border: 1px solid #2b3140; border-radius: 10px;
-  padding: 12px 16px; margin-bottom: 8px; gap: 12px;
+  background: var(--ebony-2); border: 1px solid var(--edge); border-radius: 8px;
+  padding: 13px 16px; margin-bottom: 8px; gap: 12px;
 }
-.card-title { font-weight: 600; }
-.card-sub { font-size: 13px; color: var(--muted); }
+.card-title { font-weight: 700; font-size: 15px; }
+.card-sub { font-size: 12.5px; font-family: var(--mono); color: var(--ivory-dim); margin-top: 2px; }
 .card-actions { display: flex; gap: 8px; flex-shrink: 0; }
 
-.diff-1 { color: var(--green); }
-.diff-2 { color: var(--amber); }
-.diff-3 { color: var(--red); }
+.diff-1 { color: var(--felt-green); }
+.diff-2 { color: var(--brass); }
+.diff-3 { color: var(--felt-bright); }
 
-.stats-row { display: flex; gap: 12px; margin: 12px 0 8px; }
+/* ---- Progress view ---- */
+
+.stats-row { display: flex; gap: 12px; margin: 14px 0 10px; flex-wrap: wrap; }
 .stat {
-  background: var(--panel); border: 1px solid #2b3140; border-radius: 10px;
-  padding: 14px 22px; display: flex; flex-direction: column; align-items: center;
+  background: var(--ebony-2); border: 1px solid var(--edge); border-radius: 8px;
+  padding: 14px 24px; display: flex; flex-direction: column; align-items: center;
 }
-.stat b { font-size: 22px; }
-.stat span { font-size: 12px; color: var(--muted); }
+.stat b { font-family: var(--mono); font-weight: 600; font-size: 24px; }
+.stat span {
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--ivory-dim); margin-top: 2px;
+}
 
-.accuracy { font-weight: 700; font-size: 18px; }
-.acc-good { color: var(--green); }
-.acc-ok { color: var(--amber); }
-.acc-low { color: var(--red); }
+.accuracy { font-family: var(--mono); font-weight: 600; font-size: 18px; }
+.acc-good { color: var(--felt-green); }
+.acc-ok { color: var(--brass); }
+.acc-low { color: var(--felt-bright); }
 
-.midi-badge { color: var(--green); font-size: 14px; margin: 6px 0; }
+.midi-badge { color: var(--felt-green); font-size: 14px; margin: 6px 0; }
 
-.controls { display: flex; gap: 8px; margin: 14px 0; }
+/* ---- Practice ---- */
+
+.controls { display: flex; gap: 8px; margin: 16px 0; flex-wrap: wrap; }
+.listen-rate { align-self: center; font-size: 13px; }
 
 .practice-hud {
-  background: var(--panel); border: 1px solid #2b3140; border-radius: 10px;
-  padding: 14px 16px; margin-bottom: 14px; transition: background 0.15s;
+  background: var(--ebony-2); border: 1px solid var(--edge); border-radius: 8px;
+  padding: 14px 16px; margin-bottom: 16px; transition: background 0.15s, border-color 0.15s;
 }
-.practice-hud.flash-wrong { background: #3d232a; border-color: var(--red); }
-.practice-hud.done { display: flex; align-items: center; gap: 14px; }
-.hud-row { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-top: 8px; font-size: 14px; }
-.next-notes { color: var(--accent); font-size: 17px; }
+.practice-hud.flash-wrong { background: #3a1a1c; border-color: var(--felt-bright); }
+.practice-hud.done { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.hud-row { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-top: 10px; font-size: 14px; }
+.next-notes { font-family: var(--mono); font-weight: 600; font-size: 16px; color: var(--felt-green); }
+.hud-row .muted { font-family: var(--mono); font-size: 12.5px; }
 
-.progress-bar { height: 6px; background: var(--panel-2); border-radius: 3px; overflow: hidden; }
-.progress-bar div { height: 100%; background: var(--green); transition: width 0.2s; }
+.progress-bar { height: 6px; background: var(--ebony); border: 1px solid var(--edge); border-radius: 3px; overflow: hidden; }
+.progress-bar div { height: 100%; background: linear-gradient(180deg, #5da377, var(--felt-green-deep)); transition: width 0.2s; }
 
-.piano-wrap { overflow-x: auto; padding: 10px 0; }
-.piano { position: relative; height: 170px; user-select: none; }
+/* ---- The keyboard ---- */
 
-.key { position: absolute; cursor: pointer; border-radius: 0 0 5px 5px; }
+.piano-wrap {
+  overflow-x: auto;
+  background: var(--ebony-2);
+  border: 1px solid var(--edge); border-radius: 10px;
+  padding: 18px 14px 14px;
+  margin-top: 6px;
+}
+
+.piano { position: relative; height: 176px; user-select: none; }
+
+/* The felt rail again — the strip of crimson felt behind the keys */
+.piano::before {
+  content: ''; position: absolute; left: -6px; right: -6px; top: -8px; height: 9px;
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 3px),
+    linear-gradient(180deg, var(--felt-bright), var(--felt) 55%, #7d1b26);
+  border-radius: 2px;
+}
+
+.key { position: absolute; cursor: pointer; }
 .key.white {
-  top: 0; height: 170px; background: #f5f3ee; border: 1px solid #b8b5ad; z-index: 1;
-  display: flex; align-items: flex-end; justify-content: center; padding-bottom: 6px;
+  top: 0; height: 170px; z-index: 1;
+  background: linear-gradient(180deg, #e8dfc9 0%, #f4ecdc 8%, #f7f0e1 90%, #ddd2ba 100%);
+  border: 1px solid #8f8570; border-top: none;
+  border-radius: 0 0 4px 4px;
+  box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.5);
+  display: flex; align-items: flex-end; justify-content: center; padding-bottom: 7px;
+  transition: background 0.06s;
 }
-.key.black { top: 0; height: 104px; background: #23252b; border: 1px solid #000; z-index: 2; }
-.key.white.active { background: #bcd4ff; }
-.key.black.active { background: #4f6db3; }
-.key.white.hint { background: #b9f2d8; box-shadow: inset 0 -4px 0 var(--green); }
-.key.black.hint { background: #1f7a52; box-shadow: inset 0 -4px 0 var(--green); }
+.key.black {
+  top: 0; height: 106px; z-index: 2;
+  background: linear-gradient(180deg, #3a332c 0%, #16120e 12%, #1d1813 85%, #050403 100%);
+  border: 1px solid #000; border-top: none;
+  border-radius: 0 0 3px 3px;
+  box-shadow: 0 3px 4px rgba(0, 0, 0, 0.5);
+}
+.key.white.active {
+  background: linear-gradient(180deg, #cfc4a8, #e3d8bd);
+  transform: translateY(1px); height: 169px;
+}
+.key.black.active {
+  background: linear-gradient(180deg, #241f19, #0a0806);
+  transform: translateY(1px); height: 105px; box-shadow: none;
+}
+/* Hint: green under-key felt showing at the base of the key */
+.key.white.hint { box-shadow: inset 0 -7px 0 var(--felt-green); }
+.key.black.hint { box-shadow: inset 0 -6px 0 var(--felt-green), 0 3px 4px rgba(0, 0, 0, 0.5); }
 
-.key-label { font-size: 11px; color: #7a7668; pointer-events: none; }
-.kb-anchor { position: absolute; top: 6px; left: 50%; transform: translateX(-50%); font-size: 12px; pointer-events: none; }
+.key-label { font-family: var(--mono); font-size: 10.5px; color: #857b64; pointer-events: none; }
+.kb-anchor { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); font-size: 12px; pointer-events: none; }
 
-.piano-help { font-size: 12.5px; color: var(--muted); margin-top: 8px; }
+.piano-help { font-family: var(--mono); font-size: 11.5px; color: var(--ivory-dim); margin-top: 10px; }
+.piano-help b { color: var(--ivory); font-weight: 600; }
 
-.level-cards { display: flex; gap: 14px; margin-top: 16px; flex-wrap: wrap; }
+/* ---- Level picker ---- */
+
+.level-cards { display: flex; gap: 14px; margin-top: 18px; flex-wrap: wrap; }
 .level-card {
   flex: 1 1 240px; max-width: 340px; text-align: left; cursor: pointer;
-  background: var(--panel); color: var(--text);
-  border: 2px solid #2b3140; border-radius: 12px; padding: 18px;
-  font-family: inherit; font-size: 14px;
+  background: var(--ebony-2); color: var(--ivory);
+  border: 1px solid var(--edge); border-radius: 10px; padding: 20px;
+  font-size: 14px;
+  transition: border-color 0.15s;
 }
-.level-card:hover { border-color: var(--accent); }
-.level-card.selected { border-color: var(--green); }
+.level-card:hover { border-color: var(--ivory-dim); }
+.level-card.selected { border-color: var(--felt-green); box-shadow: inset 0 -4px 0 var(--felt-green-deep); }
 .level-card:disabled { opacity: 0.6; cursor: default; }
-.level-emoji { font-size: 28px; }
-.level-name { font-weight: 700; font-size: 17px; margin: 6px 0 4px; }
-.level-desc { color: var(--muted); line-height: 1.45; }
+/* Dynamics marking (p / mf / f) as the level glyph, set like score dynamics */
+.level-mark {
+  font-family: var(--display); font-style: italic; font-weight: 700;
+  font-size: 34px; line-height: 1; color: var(--brass);
+}
+.level-name { font-family: var(--display); font-weight: 700; font-size: 21px; margin: 8px 0 4px; }
+.level-desc { color: var(--ivory-dim); line-height: 1.5; }
 
-nav .level-chip { border-color: #4a5268; }
-.listen-rate { align-self: center; font-size: 13px; }
+/* ---- Quality floor ---- */
+
+@media (max-width: 640px) {
+  .fallboard { padding-top: 20px; }
+  h1 { font-size: 21px; letter-spacing: 0.24em; }
+  .card { flex-direction: column; align-items: flex-start; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

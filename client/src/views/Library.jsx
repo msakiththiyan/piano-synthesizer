@@ -70,7 +70,7 @@ export default function Library({ songs, level, onRefresh, onPractice }) {
     <div>
       {recommended.length > 0 && (
         <section>
-          <h2>{cfg.emoji} Recommended for you ({cfg.name.toLowerCase()})</h2>
+          <h2>Recommended for you <span className="h2-note">· {cfg.name.toLowerCase()}</span></h2>
           {recommended.map(card)}
         </section>
       )}

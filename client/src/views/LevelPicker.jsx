@@ -30,7 +30,7 @@ export default function LevelPicker({ current, onSelect }) {
             disabled={saving}
             onClick={() => pick(id)}
           >
-            <div className="level-emoji">{l.emoji}</div>
+            <div className="level-mark">{l.mark}</div>
             <div className="level-name">{l.name}</div>
             <div className="level-desc">{l.desc}</div>
           </button>
